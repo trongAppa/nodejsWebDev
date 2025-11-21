@@ -1,0 +1,47 @@
+﻿Node.js 설치
+- Node.js 공식 웹사이트(https://nodejs.org)에 접속하여 최신 버전의 Node.js를 다운로드
+- 다운로드한 설치 파일을 실행하고 설치
+- 설치가 완료되면 명령 프롬프트(Windows) 또는 터미널(Mac, Linux)을 열어 node -v 명령어를 실행하여 Node.js가 정상적으로 설치되었는지 확인
+
+패키지 매니저 (npm) 설치
+- Node.js를 설치하면 함께 제공되는 npm을 사용하여 외부 모듈을 관리
+- 명령 프롬프트(Windows) 또는 터미널(Mac, Linux)을 열어 npm -v 명령어를 실행하여 npm이 정상적으로 설치되었는지 확인
+
+개발 환경 구성
+- 텍스트 에디터나 통합 개발 환경(IDE)을 선택하여 개발 환경을 구성
+- Visual Studio Code, Atom, Sublime Text 등을 활용
+- 선택한 텍스트 에디터나 IDE에 Node.js와 JavaScript 개발을 위한 확장기능(Extension)을 설치 / 코드 작성 및 디버깅을 보다 편리하게 수행
+
+개발 환경 확인
+- 명령 프롬프트(Windows) 또는 터미널(Mac, Linux)을 열어 새로운 디렉토리를 생성하고 해당 디렉토리로 이동
+- 텍스트 에디터나 IDE에서 새로운 JavaScript 파일을 생성하고 간단한 코드를 작성
+- 명령 프롬프트(Windows) 또는 터미널(Mac, Linux)에서 node 파일이름.js 명령어를 실행하여 작성한 코드를 실행해보고, 결과를 확인
+
+Ubuntu 서버 기준
+
+Node.js 설치
+- 터미널을 열고 다음 명령어를 입력
+- curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - sudo apt-get install -y nodejs
+- 위 명령어는 Node.js 공식 저장소를 추가하고 최신 LTS 버전의 Node.js를 설치
+
+Node.js 버전 확인
+- 정상적으로 설치되었는지 확인하기 위해 터미널에서 다음 명령어를 실행
+- Node.js의 버전을 출력(node -v)
+- npm의 버전을 출력(npm -v)
+
+개발 환경 구성
+- 프로젝트를 개발하기 위해 필요한 추가 도구들을 설치
+- Git 설치 : sudo apt-get install git
+- 코드 에디터 설치 : sudo snap install --classic code
+
+프로젝트 생성
+- Node.js 프로젝트를 시작하기 위해 새로운 디렉토리를 생성하고 해당 디렉토리로 이동
+- mkdir myproject cd myproject
+- 프로젝트 디렉토리에서 npm init 명령어를 실행하여 프로젝트 초기화를 진행
+- 필요한 정보들을 입력하고 기본 설정을 완료
+
+패키지 관리
+- 프로젝트에 필요한 외부 패키지를 관리하기 위해 npm을 사용
+- 필요한 패키지를 npm install 명령어를 통해 설치
+- 예를 들어, Express.js를 설치하려면 다음과 같이 실행 -> npm install express
+설치한 패키지는 package.json 파일에 자동으로 추가
