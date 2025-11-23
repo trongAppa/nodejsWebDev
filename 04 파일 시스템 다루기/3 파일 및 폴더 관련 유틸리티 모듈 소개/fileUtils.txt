@@ -1,0 +1,372 @@
+파일 및 폴더 관련 유틸리티 모듈 소개
+Node.js에서는 파일 및 폴더와 관련된 다양한 작업을 수행할 수 있는 유틸리티 모듈들이 제공
+
+1) path 모듈
+파일 경로와 관련된 작업을 수행하는 유틸리티 함수들을 제공
+파일 경로의 디렉토리 이름을 추출하거나 파일 확장자를 추출하는 등의 작업 가능
+
+const path = require('path');
+
+const filePath = '/Users/user/Documents/example.txt';
+
+const directoryName = path.dirname(filePath);
+console.log('디렉토리 이름:', directoryName);
+
+const extension = path.extname(filePath);
+console.log('파일 확장자:', extension);
+
+2) fs-extra 모듈
+기본 fs 모듈의 기능을 확장하여 파일 및 폴더와 관련된 다양한 작업을 보다 쉽게 수행할 수 있음
+폴더 복사, 파일 이동, 파일 및 폴더 삭제 등의 작업을 간편하게 처리
+
+const fs = require('fs-extra');
+
+// 폴더 복사
+fs.copySync('원본폴더', '대상폴더');
+
+// 파일 이동
+fs.moveSync('원본파일', '대상파일');
+
+// 파일 및 폴더 삭제
+fs.removeSync('파일또는폴더');
+
+3) glob 모듈
+파일 경로 패턴 매칭을 위한 유틸리티 함수를 제공
+파일 시스템에서 특정 패턴과 일치하는 파일들을 검색할 때 유용하게 사용
+
+const glob = require('glob');
+
+// 특정 패턴과 일치하는 파일들 검색
+glob('*.txt', (err, files) => {
+  if (err) {
+    console.error('파일 검색 실패:', err);
+    return;
+  }
+
+  console.log('검색된 파일:', files);
+});
+
+4) rimraf 모듈
+파일 또는 폴더를 재귀적으로 삭제하는 기능을 제공하는 유틸리티 모듈
+remove 메서드와 유사하지만, 해당 폴더 내의 모든 파일 및 하위 폴더를 삭제하는 작업을 수행
+
+const rimraf = require('rimraf');
+
+// 재귀적으로 폴더 삭제
+rimraf('폴더경로', (err) => {
+  if (err) {
+    console.error('폴더 삭제 실패:', err);
+    return;
+  }
+
+  console.log('폴더 삭제 완료');
+});
+
+'폴더경로'는 삭제할 폴더의 경로를 나타냄
+
+사용하여 해당 폴더와 하위 요소들을 재귀적으로 삭제 가능
+
+5) chokidar 모듈
+파일 및 폴더의 변경 사항을 감지하는 기능을 제공하는 유틸리티 모듈
+파일 또는 폴더의 생성, 수정, 삭제 등의 이벤트를 실시간으로 감지
+
+const chokidar = require('chokidar');
+
+// 폴더 감시
+const watcher = chokidar.watch('폴더경로');
+
+// 이벤트 리스너 등록
+watcher.on('add', (path) => {
+  console.log('새로운 파일 추가:', path);
+});
+
+watcher.on('change', (path) => {
+  console.log('파일 변경:', path);
+});
+
+watcher.on('unlink', (path) => {
+  console.log('파일 삭제:', path);
+});
+
+// 감시 중지
+watcher.close();
+
+'폴더경로'는 감시할 폴더의 경로
+chokidar.watch 함수를 사용하여 폴더를 감시하고, 이벤트 리스너를 등록하여 원하는 이벤트를 처리
+watcher.close를 호출하여 감시를 중지
+
+6) mkdirp 모듈
+중첩된 폴더를 한 번에 생성하는 기능을 제공하는 유틸리티 모듈
+기존의 fs.mkdir은 중첩된 폴더를 생성하기 위해서는 각각의 상위 폴더를 순차적으로 생성해야 했지만, mkdirp 모듈은 중첩된 폴더를 한 번에 생성할 수 있음
+
+const mkdirp = require('mkdirp');
+
+// 중첩된 폴더 생성
+mkdirp('폴더경로', (err) => {
+  if (err) {
+    console.error('폴더 생성 실패:', err);
+    return;
+  }
+
+  console.log('폴더 생성 완료');
+});
+
+'폴더경로'는 생성할 폴더의 경로
+mkdirp 함수를 사용하여 해당 경로의 폴더와 중첩된 상위 폴더들을 한 번에 생성
+
+7) fs-promise 모듈
+fs 모듈의 비동기 메서드들을 Promise 기반으로 사용할 수 있게 해주는 유틸리티 모듈
+콜백 함수 대신 Promise를 사용하여 파일 및 폴더 관련 작업을 처리할 수 있음
+
+const fs = require('fs-promise');
+
+// 파일 읽기
+fs.readFile('파일경로', '인코딩')
+  .then((data) => {
+    console.log('파일 내용:', data);
+  })
+  .catch((err) => {
+    console.error('파일 읽기 실패:', err);
+  });
+
+// 폴더 생성
+fs.mkdir('폴더경로')
+  .then(() => {
+    console.log('폴더 생성 완료');
+  })
+  .catch((err) => {
+    console.error('폴더 생성 실패:', err);
+  });
+
+'파일경로'와 '폴더경로'는 각각 읽을 파일의 경로와 생성할 폴더의 경로
+fs-promise 모듈을 사용하여 readFile과 mkdir 메서드를 Promise 체인으로 사용 가능
+
+8) walkdir 모듈
+폴더 내의 파일들을 재귀적으로 탐색하는 기능을 제공하는 유틸리티 모듈
+특정 폴더 내의 모든 파일을 순회하고 각 파일에 대한 작업을 수행
+
+const walkdir = require('walkdir');
+
+// 폴더 내 파일 탐색
+const walker = walkdir('폴더경로');
+
+// 파일 탐색 이벤트 리스너 등록
+walker.on('file', (path, stat) => {
+  console.log('파일 경로:', path);
+  console.log('파일 정보:', stat);
+});
+
+// 파일 탐색 완료 이벤트 리스너 등록
+walker.on('end', () => {
+  console.log('파일 탐색 완료');
+});
+
+'폴더경로'는 탐색할 폴더의 경로
+walkdir 함수를 사용하여 폴더 내의 파일들을 순회하고, 이벤트 리스너를 등록하여 각 파일에 대한 작업을 수행
+
+9) findit 모듈
+파일 시스템에서 특정 파일이나 폴더를 검색하는 기능을 제공하는 유틸리티 모듈
+특정 디렉토리부터 시작하여 하위 폴더를 재귀적으로 검색하여 원하는 파일이나 폴더를 찾음
+
+const findit = require('findit');
+
+// 특정 파일 또는 폴더 검색
+const finder = findit('시작폴더');
+
+// 파일 또는 폴더 검색 이벤트 리스너 등록
+finder.on('file', (file, stat) => {
+  console.log('파일 경로:', file);
+  console.log('파일 정보:', stat);
+});
+
+finder.on('directory', (dir, stat) => {
+  console.log('폴더 경로:', dir);
+  console.log('폴더 정보:', stat);
+});
+
+// 검색 완료 이벤트 리스너 등록
+finder.on('end', () => {
+  console.log('검색 완료');
+});
+
+'시작폴더'는 검색을 시작할 폴더의 경로
+findit 함수를 사용하여 검색을 시작하고, 이벤트 리스너를 등록하여 검색된 파일 또는 폴더에 대한 작업을 수행
+
+10) watch 모듈
+파일 또는 폴더의 변경 사항을 감지하고 이벤트를 발생시키는 기능을 제공하는 유틸리티 모듈
+파일 또는 폴더의 생성, 수정, 삭제 등의 변경 사항을 실시간으로 모니터링
+
+const watch = require('watch');
+
+// 파일 또는 폴더 감시
+watch.createMonitor('감시할경로', (monitor) => {
+  // 이벤트 리스너 등록
+  monitor.on('created', (path, stat) => {
+    console.log('파일 또는 폴더 생성:', path);
+  });
+
+  monitor.on('changed', (path, curr, prev) => {
+    console.log('파일 또는 폴더 변경:', path);
+  });
+
+  monitor.on('removed', (path, stat) => {
+    console.log('파일 또는 폴더 삭제:', path);
+  });
+});
+
+'감시할경로'는 감시할 파일 또는 폴더의 경로
+watch.createMonitor 함수를 사용하여 파일 또는 폴더를 감시하고, 이벤트 리스너를 등록하여 변경 사항에 대한 작업을 수행
+
+11) fs-sync 모듈
+fs 모듈의 동기 메서드들을 사용할 수 있게 해주는 유틸리티 모듈
+기존의 fs 모듈은 대부분의 메서드가 비동기 방식으로 동작하지만, fs-sync 모듈은 동기 방식으로 파일 및 폴더 관련 작업을 수행
+
+const fs = require('fs-sync');
+
+// 파일 복사
+fs.copy('원본파일', '대상파일');
+
+// 폴더 삭제
+fs.remove('폴더경로');
+'원본파일', '대상파일', '폴더경로'는 각각 복사할 원본 파일의 경로, 대상 파일의 경로, 삭제할 폴더의 경로
+fs-sync 모듈을 사용하여 파일 복사 및 폴더 삭제 등의 작업을 동기적으로 수행
+
+12) fast-glob 모듈
+파일 시스템에서 특정 패턴과 일치하는 파일들을 검색하는 기능을 제공하는 유틸리티 모듈
+빠른 속도로 파일 검색을 수행할 수 있으며, 패턴 매칭 및 필터링 등의 다양한 기능을 제공
+
+const fg = require('fast-glob');
+
+// 특정 패턴과 일치하는 파일 검색
+fg('패턴', {
+  onlyFiles: true,
+  cwd: '시작폴더',
+})
+  .then((files) => {
+    console.log('검색된 파일:', files);
+  })
+  .catch((err) => {
+    console.error('파일 검색 실패:', err);
+  });
+  
+'패턴'은 검색할 파일의 패턴을 나타내며, '시작폴더'는 검색을 시작할 폴더의 경로
+fast-glob 모듈을 사용하여 파일 검색을 수행하고, 옵션 객체를 통해 추가적인 설정
+
+13) fs-jetpack 모듈
+fs 모듈의 기능을 보다 간결하고 직관적인 API로 제공하는 유틸리티 모듈
+파일 및 폴더 관련 작업을 수행하기 위한 다양한 메서드를 제공하며, 체이닝 방식으로 메서드를 연속적으로 호출
+
+const jetpack = require('fs-jetpack');
+
+// 파일 읽기
+const content = jetpack.read('파일경로');
+
+// 폴더 생성
+jetpack.dir('폴더경로');
+
+// 파일 삭제
+jetpack.remove('파일경로');
+
+'파일경로'와 '폴더경로'는 각각 읽을 파일의 경로와 생성할 폴더의 경로
+fs-jetpack 모듈을 사용하여 파일 읽기, 폴더 생성, 파일 삭제 등의 작업을 보다 간편하게 수행
+
+14) fs-readdir-recursive 모듈
+폴더 내의 모든 파일과 하위 폴더를 재귀적으로 탐색하여 반환하는 기능을 제공하는 유틸리티 모듈
+간단하게 폴더 내의 파일 및 폴더 구조를 탐색
+
+const readdirRecursive = require('fs-readdir-recursive');
+
+// 폴더 내 모든 파일과 폴더 탐색
+const files = readdirRecursive('폴더경로');
+
+console.log('폴더 내 파일과 폴더:', files);
+
+'폴더경로'는 탐색할 폴더의 경로
+fs-readdir-recursive 모듈을 사용하여 폴더 내의 파일과 폴더 구조를 재귀적으로 탐색
+
+15) fs-copy-file 모듈
+파일을 복사하는 기능을 제공하는 유틸리티 모듈
+기존의 fs 모듈은 파일을 복사하기 위해 createReadStream과 createWriteStream을 사용해야 했지만, fs-copy-file 모듈은 간단한 API로 파일 복사를 수행
+
+const copyFile = require('fs-copy-file');
+
+// 파일 복사
+copyFile('원본파일', '대상파일', (err) => {
+  if (err) {
+    console.error('파일 복사 실패:', err);
+    return;
+  }
+
+  console.log('파일 복사 완료');
+});
+
+'원본파일'과 '대상파일'은 각각 복사할 원본 파일의 경로와 대상 파일의 경로
+fs-copy-file 모듈을 사용하여 파일을 간편하게 복사
+
+16) fs-write-stream-atomic 모듈
+원자적(atomic)으로 파일에 데이터를 쓰는 기능을 제공하는 유틸리티 모듈
+여러 프로세스 또는 스레드가 동시에 파일에 접근하는 상황에서도 데이터 무결성을 보장
+
+const writeStreamAtomic = require('fs-write-stream-atomic');
+
+// 원자적으로 파일에 데이터 쓰기
+const stream = writeStreamAtomic('파일경로');
+
+stream.write('데이터1');
+stream.write('데이터2');
+stream.end();
+
+stream.on('finish', () => {
+  console.log('파일 쓰기 완료');
+});
+
+'파일경로'는 데이터를 쓸 파일의 경로
+fs-write-stream-atomic 모듈을 사용하여 파일에 원자적으로 데이터를 작성
+
+17) fs-recursive 모듈
+파일 및 폴더와 관련된 다양한 작업을 수행하는 유틸리티 함수들을 제공하는 모듈
+폴더 내의 파일과 폴더를 재귀적으로 탐색하고, 파일/폴더 복사, 이동, 삭제 등의 작업을 수행
+
+const fsRecursive = require('fs-recursive');
+
+// 폴더 내의 파일 및 폴더 탐색
+const files = fsRecursive.readdirSyncRecursive('폴더경로');
+
+console.log('폴더 내 파일과 폴더:', files);
+
+'폴더경로'는 탐색할 폴더의 경로
+fs-recursive 모듈을 사용하여 폴더 내의 파일과 폴더를 재귀적으로 탐색
+
+18) globby 모듈
+파일 경로 패턴을 사용하여 파일을 검색하는 기능을 제공하는 유틸리티 모듈
+glob 모듈의 기능을 확장하여 파일 경로 패턴을 사용하여 파일을 검색
+
+const globby = require('globby');
+
+// 파일 검색
+globby(['패턴1', '패턴2'], {
+  cwd: '시작폴더',
+})
+  .then((files) => {
+    console.log('검색된 파일:', files);
+  })
+  .catch((err) => {
+    console.error('파일 검색 실패:', err);
+  });
+
+'패턴1'과 '패턴2'는 검색할 파일의 패턴을 나타내며, '시작폴더'는 검색을 시작할 폴더의 경로
+globby 모듈을 사용하여 파일 검색을 수행하고, 패턴 배열과 옵션 객체를 통해 추가적인 설정
+
+19) fs-tree 모듈
+폴더의 파일과 폴더 구조를 트리 형태로 표현하는 기능을 제공하는 유틸리티 모듈
+폴더 내의 파일과 폴더 구조를 트리 형태로 가져올 수 있음
+
+const fsTree = require('fs-tree');
+
+// 폴더의 파일 및 폴더 구조 가져오기
+const tree = fsTree('폴더경로');
+
+console.log('폴더 구조:', tree);
+
+'폴더경로'는 파일과 폴더 구조를 가져올 폴더의 경로
+fs-tree 모듈을 사용하여 폴더 내의 파일과 폴더 구조를 트리 형태로 가져옴
