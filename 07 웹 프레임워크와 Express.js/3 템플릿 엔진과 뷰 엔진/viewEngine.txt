@@ -1,0 +1,51 @@
+템플릿 엔진과 뷰 엔진
+- Express.js는 템플릿 엔진과 뷰 엔진을 사용하여 동적인 웹 페이지를 생성하고 렌더링 가능
+- 템플릿 엔진은 HTML 템플릿에 동적인 데이터를 삽입하여 완성된 HTML을 생성하는 역할
+- 뷰 엔진은 이러한 템플릿 엔진을 Express.js와 통합하여 사용할 수 있도록 지원하는 역할
+
+템플릿 엔진과 뷰 엔진 사용법
+- Express.js에서 템플릿 엔진과 뷰 엔진을 사용하기 위해서는 먼저 해당 엔진을 설치
+- 대표적인 템플릿 엔진으로는 EJS, Pug, Handlebars 등이 있음
+
+1. 템플릿 엔진 설치: Express.js에서 EJS를 사용하기 위해서는 다음과 같은 명령어를 사용하여 EJS를 설치
+- npm install ejs
+
+2. Express.js에서 EJS 설정: Express.js의 설정 파일(app.js 또는 index.js 등)에서 EJS를 사용하도록 설정
+
+const express = require('express');
+const app = express();
+
+// EJS 사용 설정
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// 라우팅 등 Express.js의 다른 기능들을 정의합니다.
+
+app.listen(3000, () => {
+  console.log('서버가 정상적으로 시작되었습니다.');
+});
+
+3. EJS 템플릿 작성: EJS 템플릿 파일(.ejs 파일)은 HTML과 JavaScript 코드를 혼합하여 작성
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Express.js와 EJS</title>
+</head>
+<body>
+  <h1>Welcome to <%= name %>!</h1>
+</body>
+</html>
+
+4. Express.js에서 EJS 템플릿 렌더링: Express.js에서 EJS 템플릿을 렌더링하기 위해서는 res.render() 메서드를 사용
+
+app.get('/', (req, res) => {
+  const name = 'Express.js';
+  res.render('index', { name });
+});
+
+res.render() 메서드는 views 폴더에서 index.ejs 파일을 렌더링하고, name 변수를 템플릿에 전달하여 동적으로 완성된 HTML을 생성
+
+Express.js에서 템플릿 엔진과 뷰 엔진을 사용하면 동적인 웹 페이지를 생성하고 데이터를 삽입하여 렌더링 가능 
+각각의 템플릿 엔진은 설치와 설정이 필요하며, Express.js에서 제공하는 res.render() 메서드를 사용하여 템플릿을 렌더링 가능
+사용자에게 동적인 콘텐츠를 제공하는 웹 애플리케이션을 개발

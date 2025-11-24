@@ -1,0 +1,167 @@
+ORM(Object-Relational Mapping) 도구 소개
+- 데이터베이스의 관계형 데이터와 객체 지향 프로그래밍 언어의 객체 간의 매핑을 자동화하는 기술
+- ORM을 사용하면 데이터베이스와의 상호작용을 객체 지향적으로 다룰 수 있으며, SQL 쿼리를 직접 작성하지 않고도 데이터를 조작
+- 개발자는 데이터베이스에 대한 세부 사항을 신경 쓰지 않고도 더욱 집중적으로 애플리케이션 로직을 작성
+
+ORM 도구의 장점
+- 객체 지향적인 접근 : 데이터베이스의 테이블과 열(Column)을 객체와 속성으로 매핑하여 개발자가 객체 지향적인 방식으로 데이터를 다룰 수 있음
+- 생산성 향상 : SQL 쿼리를 직접 작성하지 않아도 되므로 개발자는 데이터베이스에 대한 저수준 작업을 최소화하고, 더욱 집중적으로 애플리케이션 로직을 작성
+- 유지보수 용이성 : 데이터베이스 스키마의 변경에 대해 자동으로 대응할 수 있으며, 코드의 유지보수가 용이
+- 데이터베이스 독립성 : 데이터베이스 종류에 상관없이 동일한 코드로 다양한 데이터베이스와 연동
+
+주로 사용되는 ORM 도구
+- Sequelize : MySQL, PostgreSQL, SQLite, MSSQL 등 다양한 SQL 데이터베이스와 연동할 수 있는 ORM 도구 / Promises와 async/await를 지원하며, 데이터베이스 마이그레이션, 쿼리 생성, 모델 관리 등 다양한 기능을 제공
+- TypeORM : TypeScript로 작성된 ORM 도구로, MySQL, PostgreSQL, SQLite, MSSQL, MongoDB 등 다양한 데이터베이스와 연동 / Decorator를 사용하여 엔티티와 관계를 정의하며, 데이터베이스 마이그레이션, 쿼리 생성, 트랜잭션 관리 등 다양한 기능을 제공
+- Mongoose : Mongoose는 MongoDB와 연동할 수 있는 ORM 도구로, MongoDB의 문서(Document) 기반 모델을 정의하고 사용 / 스키마 기반으로 데이터를 다루며, 쿼리 생성, 인덱싱, 미들웨어 등 다양한 기능을 제공
+
+Sequelize 예제 코드
+1. 모듈 설치
+- npm install sequelize mysql2
+
+2. 연결 설정 및 모델 정의
+const Sequelize = require('sequelize');
+
+// 연결 설정
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'mysql',
+});
+
+// 모델 정의
+const User = sequelize.define('User', {
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+  },
+});
+
+// 테이블 생성
+sequelize.sync()
+  .then(() => {
+    console.log('테이블이 성공적으로 생성되었습니다.');
+  })
+  .catch((error) => {
+    console.error('테이블 생성 중 오류가 발생했습니다.', error);
+  });
+  
+3. 데이터 삽입
+
+User.create({
+  name: 'John Doe',
+  email: 'john@example.com',
+})
+  .then((user) => {
+    console.log('데이터 삽입이 성공했습니다.', user);
+  })
+  .catch((error) => {
+    console.error('데이터 삽입 중 오류가 발생했습니다.', error);
+  });
+  
+TypeORM 예제 코드
+1. 모듈 설치
+- npm install typeorm reflect-metadata mysql
+
+2. 연결 설정 및 엔티티 정의
+import { createConnection, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+// 연결 설정
+createConnection({
+  type: 'mysql',
+  host: 'localhost',
+  port: 3306,
+  username: 'username',
+  password: 'password',
+  database: 'database_name',
+  synchronize: true,
+  entities: [User],
+})
+  .then(() => {
+    console.log('연결에 성공했습니다.');
+  })
+  .catch((error) => {
+    console.error('연결 중 오류가 발생했습니다.', error);
+  });
+
+// 엔티티 정의
+@Entity()
+class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column({ unique: true })
+  email: string;
+}
+
+3. 데이터 삽입
+const userRepository = connection.getRepository(User);
+
+const user = new User();
+user.name = 'John Doe';
+user.email = 'john@example.com';
+
+userRepository.save(user)
+  .then(() => {
+    console.log('데이터 삽입이 성공했습니다.');
+  })
+  .catch((error) => {
+    console.error('데이터 삽입 중 오류가 발생했습니다.', error);
+  });
+
+Mongoose 예제 코드
+1. 모듈 설치
+- npm install mongoose
+
+2. 연결 설정 및 스키마 정의
+const mongoose = require('mongoose');
+
+// 연결 설정
+mongoose.connect('mongodb://localhost:27017/database', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => {
+    console.log('연결에 성공했습니다.');
+  })
+  .catch((error) => {
+    console.error('연결 중 오류가 발생했습니다.', error);
+  });
+
+// 스키마 정의
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
+
+const User = mongoose.model('User', userSchema);
+
+3. 데이터 삽입
+const user = new User({
+  name: 'John Doe',
+  email: 'john@example.com',
+});
+
+user.save()
+  .then(() => {
+    console.log('데이터 삽입이 성공했습니다.');
+  })
+  .catch((error) => {
+    console.error('데이터 삽입 중 오류가 발생했습니다.', error);
+  });
+
+각각의 ORM 도구에 대한 모듈 설치, 연결 설정 및 데이터 삽입 방법을 제공
+프로젝트에 맞게 이를 수정하여 사용
