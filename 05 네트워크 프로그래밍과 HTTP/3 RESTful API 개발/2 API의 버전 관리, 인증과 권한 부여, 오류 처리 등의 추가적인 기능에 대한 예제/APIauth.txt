@@ -1,0 +1,113 @@
+﻿API의 버전 관리, 인증과 권한 부여, 오류 처리 등의 추가적인 기능에 대한 예제
+
+const http = require('http');
+
+// API 버전별 핸들러 함수
+const versionHandlers = {
+  v1: {
+    getUser: (req, res) => {
+      // 사용자 정보를 반환하는 로직
+      const user = {
+        name: 'John Doe',
+        email: 'johndoe@example.com'
+      };
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(user));
+    }
+  },
+  v2: {
+    getUser: (req, res) => {
+      // 사용자 정보를 반환하는 로직 (v2 버전에서는 추가 정보 포함)
+      const user = {
+        name: 'John Doe',
+        email: 'johndoe@example.com',
+        age: 30
+      };
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(user));
+    }
+  }
+};
+
+// 인증 및 권한 부여 미들웨어
+const authenticateAndAuthorize = (req, res, next) => {
+  // 예시: 간단한 토큰 기반 인증과 권한 부여 로직
+  const { headers } = req;
+  const authToken = headers.authorization;
+
+  if (!authToken) {
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Unauthorized' }));
+    return;
+  }
+
+  // 토큰을 검증하고 권한을 확인하는 로직
+
+  // 권한이 없는 경우
+  if (!hasPermission(authToken)) {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Forbidden' }));
+    return;
+  }
+
+  // 인증 및 권한 부여가 완료되면 다음 미들웨어로 이동
+  next();
+};
+
+// 오류 처리 미들웨어
+const errorHandler = (err, req, res, next) => {
+  // 오류 처리 로직
+  console.error(err);
+
+  res.writeHead(500, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: 'Internal Server Error' }));
+};
+
+// API 서버 생성
+const server = http.createServer((req, res) => {
+  // 버전 추출
+  const version = extractVersionFromUrl(req.url);
+
+  // 해당 버전의 핸들러 함수 호출
+  const handler = versionHandlers[version];
+  if (!handler) {
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Not Found' }));
+    return;
+  }
+
+  // 인증 및 권한 부여 미들웨어 적용
+  authenticateAndAuthorize(req, res, () => {
+    // 핸들러 함수 호출
+    handler(req, res);
+  });
+});
+
+// 오류 처리 미들웨어 등록
+server.on('error', errorHandler);
+
+// 서버 시작
+server.listen(3000, 'localhost', () => {
+  console.log('API 서버가 3000번 포트에서 실행 중입니다.');
+});
+
+// URL에서 버전 추출하는 함수
+function extractVersionFromUrl(url) {
+  // 예시: URL에서 /v1/ 또는 /v2/ 등의 버전 정보 추출
+  const match = url.match(/\/v(\d+)\//);
+  return match ? match[1] : 'v1'; // 기본값은 v1
+}
+
+// 권한 확인 함수
+function hasPermission(authToken) {
+  // 예시: 토큰을 검증하고 권한을 확인하는 로직
+  // 토큰이 유효하고 권한이 있는 경우에만 true 반환
+  return true;
+}
+
+versionHandlers 객체에 각 버전에 따른 핸들러 함수들을 정의하여 API의 버전 관리를 구현
+authenticateAndAuthorize 함수를 통해 간단한 인증과 권한 부여 로직을 구현
+errorHandler 함수를 통해 오류 처리를 수행
+
+실제 운영 환경에서는 보안, 데이터 유효성 검사, 로깅 등의 추가적인 고려 사항이 필요할 수 있으므로 이를 참고하여 개발
+필요에 따라 미들웨어를 추가하거나 수정하여 사용

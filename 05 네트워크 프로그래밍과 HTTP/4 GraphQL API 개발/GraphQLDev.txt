@@ -1,0 +1,98 @@
+﻿GraphQL API 개발
+쿼리 언어로서 클라이언트가 필요한 데이터를 효율적으로 요청하고 서버에서 해당 데이터를 응답하는 기술
+GraphQL을 사용하여 데이터 요청과 응답을 처리하는 방법과 기본 개념을 학습
+
+1. 기본 개념과 동작 방식
+GraphQL은 클라이언트가 요청한 데이터의 구조와 필드를 정확히 지정할 수 있으며, 서버는 해당 요청에 대한 데이터를 정확히 응답
+클라이언트는 필요한 데이터만을 효율적으로 요청하고, 과도한 데이터 오버페칭과 언더페칭 문제를 해결
+
+2. Node.js에서 GraphQL 서버를 구축
+GraphQL 서버를 구축하기 위해 Apollo Server와 같은 GraphQL 서버 프레임워크를 사용하고, 스키마를 정의하고 리졸버 함수를 작성하여 데이터 요청과 응답을 처리
+라이언트의 GraphQL 쿼리에 대한 응답을 생성
+
+3. GraphQL의 장점과 활용 사례
+유연하고 선언적인 쿼리 언어로서 다양한 데이터 요구사항을 처리할 수 있으며, 여러 데이터 소스를 효율적으로 통합
+RESTful API와 비교하여 GraphQL의 장점을 이해하고, 적절한 상황에서의 활용 사례를 학습
+
+4. 클라이언트에서의 GraphQL 요청과 응답 처리 방법
+클라이언트는 GraphQL 쿼리를 작성하고 요청을 보내며, 서버에서는 해당 쿼리를 실행하여 데이터를 응답
+클라이언트에서는 응답 받은 데이터를 활용하여 UI를 업데이트하고 사용자에게 보여줄 수 있음
+
+Node.js와 GraphQL을 사용하여 데이터 요청과 응답을 처리하는 방법을 학습함으로써 네트워크 프로그래밍과 HTTP에 대한 이해도를 높임 
+GraphQL은 현대적인 웹 애플리케이션 개발에서 많이 활용되는 기술
+
+Node.js와 GraphQL을 사용하여 간단한 예제를 구현한 코드입
+
+필요한 패키지(express, express-graphql, graphql)를 설치 
+npm install express express-graphql graphql
+
+index.js 파일에 작성
+
+const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+// 스키마 정의
+const schema = buildSchema(`
+  type Query {
+    hello: String
+    user(id: Int): User
+  }
+
+  type User {
+    id: Int
+    name: String
+    age: Int
+  }
+`);
+
+// 리졸버 함수 정의
+const root = {
+  hello: () => '안녕하세요!',
+  user: ({ id }) => {
+    // 실제 데이터베이스 연동이 아니므로 간단한 예시 데이터를 반환합니다.
+    const users = [
+      { id: 1, name: 'John Doe', age: 28 },
+      { id: 2, name: 'Jane Smith', age: 32 },
+    ];
+    return users.find(user => user.id === id);
+  },
+};
+
+// Express 앱 생성
+const app = express();
+
+// GraphQL 미들웨어 설정
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true, // GraphiQL을 사용할 수 있도록 설정합니다.
+  })
+);
+
+// 서버 실행
+app.listen(3000, () => {
+  console.log('GraphQL 서버가 http://localhost:3000/graphql 에서 실행 중입니다.');
+});
+
+Node.js와 Express를 사용하여 GraphQL 서버를 구축하는 예제
+스키마를 buildSchema 함수를 사용하여 정의하고, 리졸버 함수를 작성하여 해당 쿼리에 대한 응답을 처리
+예시로 hello 쿼리와 user(id: Int) 쿼리를 정의
+
+GraphQL 서버가 http://localhost:3000/graphql에서 실행 
+GraphQL에 접속하여 GraphQL 쿼리를 실행하고 결과를 확인
+다음과 같이 쿼리를 실행
+
+query {
+  hello
+  user(id: 1) {
+    id
+    name
+    age
+  }
+}
+
+쿼리는 hello 쿼리와 user(id: 1) 쿼리를 실행
+결과로 hello의 문자열과 id, name, age를 가진 사용자의 정보를 전달받음

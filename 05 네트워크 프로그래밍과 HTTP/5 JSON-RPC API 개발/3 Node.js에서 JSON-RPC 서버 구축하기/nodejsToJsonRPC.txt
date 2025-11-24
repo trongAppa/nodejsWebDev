@@ -1,0 +1,47 @@
+﻿Node.js에서 JSON-RPC 서버 구축하기
+JSON-RPC를 구현하기 위해서는 JSON-RPC 라이브러리를 사용
+json-rpc-protocol이나 jsonrpc 또는 jayson와 같은 라이브러리를 활용
+라이브러리를 사용하여 서버에서 JSON-RPC 엔드포인트를 생성하고, 클라이언트에서는 해당 엔드포인트에 요청을 보내어 프로시저를 호출
+
+jayson 라이브러리를 활용하여 Node.js에서 JSON-RPC를 구현한 간단한 코드
+
+// 서버 측 코드
+const jayson = require('jayson');
+
+// JSON-RPC 메서드 정의
+const methods = {
+  add: (params, callback) => {
+    const result = params.reduce((sum, value) => sum + value, 0);
+    callback(null, result);
+  },
+};
+
+// JSON-RPC 서버 생성
+const server = jayson.server(methods);
+
+// 서버 실행
+server.http().listen(3000, () => {
+  console.log('JSON-RPC 서버가 http://localhost:3000 에서 실행 중입니다.');
+});
+
+
+// 클라이언트 측 코드
+const jayson = require('jayson');
+
+// JSON-RPC 클라이언트 생성
+const client = jayson.client.http({
+  port: 3000,
+  hostname: 'localhost',
+});
+
+// JSON-RPC 메서드 호출
+client.request('add', [2, 3, 5], (err, response) => {
+  if (err) throw err;
+  console.log('결과:', response.result);
+});
+
+JSON-RPC 서버와 클라이언트를 생성하고, add 메서드를 호출하는 간단한 예제
+서버에서는 jayson 라이브러리를 사용하여 JSON-RPC 서버를 생성
+클라이언트에서는 해당 서버의 엔드포인트에 요청을 보내어 add 메서드를 호출
+
+JSON-RPC는 간편하고 가벼운 프로시저 호출 프로토콜로서, 분산 시스템과 웹 서비스 개발에 유용하게 활용

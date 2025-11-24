@@ -1,0 +1,77 @@
+﻿RESTful API 예제
+Node.js와 Express.js를 사용하여 RESTful API를 개발하는 예제 코드
+
+const express = require('express');
+const app = express();
+const port = 3000;
+
+// 데이터베이스 대신 간단한 배열을 사용하여 예시 데이터 생성
+const users = [
+  { id: 1, name: 'John Doe' },
+  { id: 2, name: 'Jane Smith' },
+];
+
+// 모든 사용자 정보 반환
+app.get('/users', (req, res) => {
+  res.json(users);
+});
+
+// 특정 사용자 정보 반환
+app.get('/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const user = users.find(user => user.id === userId);
+
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// 새로운 사용자 생성
+app.post('/users', (req, res) => {
+  const newUser = { id: users.length + 1, name: req.body.name };
+  users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+// 사용자 정보 업데이트
+app.put('/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const user = users.find(user => user.id === userId);
+
+  if (user) {
+    user.name = req.body.name;
+    res.json(user);
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// 사용자 삭제
+app.delete('/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const userIndex = users.findIndex(user => user.id === userId);
+
+  if (userIndex !== -1) {
+    users.splice(userIndex, 1);
+    res.sendStatus(204);
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// 서버 실행
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
+Express.js를 사용하여 간단한 사용자 정보를 다루는 RESTful API를 구현한 예제
+/users 엔드포인트는 모든 사용자 정보를 반환
+/users/:id 엔드포인트는 특정 사용자의 정보를 반환
+/users에 POST 요청을 보내면 새로운 사용자를 생성
+/users/:id에 PUT 요청을 보내면 해당 사용자의 정보를 업데이트
+/users/:id에 DELETE 요청을 보내면 해당 사용자를 삭제
+
+예제 코드를 실행하면 Express.js 서버가 3000번 포트에서 실행되며, API 엔드포인트에 대한 요청을 처리
+코드는 간단한 배열을 사용하여 예시 데이터를 생성하고 있으므로, 실제 데이터베이스와 연동하거나 적절한 데이터 저장 방식을 적용
