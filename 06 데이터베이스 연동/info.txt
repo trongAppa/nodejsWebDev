@@ -1,0 +1,17 @@
+﻿데이터베이스 연동
+SQL과 NoSQL 데이터베이스의 소개, MySQL과 MongoDB와의 연동, 그리고 ORM(Object-Relational Mapping) 도구에 대한 소개
+
+SQL과 NoSQL 데이터베이스 소개
+- SQL과 NoSQL 데이터베이스의 개념과 특징
+- SQL 데이터베이스는 관계형 데이터베이스로서 테이블과 스키마를 사용하여 데이터를 구조화하고 관리
+- NoSQL 데이터베이스는 비관계형 데이터베이스로서 유연한 데이터 모델을 사용하여 데이터를 저장하고 조회
+- 각각의 데이터베이스 유형의 장단점과 사용 사례
+
+MySQL, MongoDB와의 연동
+- Node.js와 함께 가장 많이 사용되는 SQL 데이터베이스인 MySQL과 NoSQL 데이터베이스인 MongoDB와의 연동 방법
+- MySQL과 MongoDB를 Node.js 애플리케이션과 연결하는 방법과 데이터베이스에 데이터를 삽입, 조회, 수정, 삭제하는 방법에 대해서 상세히 설명
+
+ORM(Object-Relational Mapping) 도구
+- ORM 도구의 개념과 장점을 알아보고, Node.js에서 주로 사용되는 ORM 도구들을 소개
+- ORM은 객체와 관계형 데이터베이스 사이의 매핑을 자동화해주는 도구로, 객체 지향 프로그래밍과 데이터베이스 간의 간편한 상호작용을 제공
+- Sequelize, TypeORM 등의 대표적인 ORM 도구를 소개하며, 각 도구의 특징과 사용법
