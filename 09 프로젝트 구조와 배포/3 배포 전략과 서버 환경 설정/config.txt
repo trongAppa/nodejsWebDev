@@ -1,0 +1,77 @@
+﻿배포 전략과 서버 환경 설정
+배포 전략
+소프트웨어 개발된 애플리케이션을 최종 사용자에게 제공하기 위한 계획과 방법을 의미
+소프트웨어 개발이 완료되고 테스트가 완료된 후, 배포 전략을 수립하여 안정적이고 효율적인 애플리케이션 배포를 위한 프로세스를 설계
+다양한 요소를 고려하여 결정됩니다. 
+1. 빌드 프로세스
+- 어플리케이션의 소스 코드를 빌드하여 실행 가능한 형태로 변환하는 프로세스를 설계
+- 소스 코드의 압축, 번들링, 최적화 등을 포함할 수 있습니다. 주로 Webpack, Babel, Gulp 등의 도구를 활용하여 자동화된 빌드 프로세스를 구성
+
+2. 환경 변수 관리
+- 애플리케이션의 설정 정보를 환경 변수를 통해 관리
+- 환경(development, production, staging 등)에 대한 설정을 분리하여 관리하고, 각 환경에 따라 다른 환경 변수 값을 사용
+- dotenv, config 등의 패키지를 사용하여 환경 변수를 로드하고 관리
+
+3. 로깅
+- 애플리케이션의 로그를 기록하여 운영 중에 발생하는 이벤트와 오류를 추적 
+- 로그 레벨을 설정하여 로그의 상세도를 조정하고, 로그 파일 또는 로그 서비스에 로그를 저장
+- winston, bunyan 등의 로깅 라이브러리를 활용하여 로깅을 구현
+
+4. 모니터링
+- 애플리케이션의 상태와 성능을 모니터링하여 시스템의 이상을 감지하고 조치
+- 메모리 사용량, CPU 사용량, 응답 시간 등의 지표를 모니터링하고, 모니터링 도구나 서비스를 활용하여 경고 및 알림을 설정
+- Prometheus, Grafana, New Relic 등의 도구를 사용하여 모니터링을 구현
+
+5. 클라우드 환경 활용
+- 클라우드 서비스를 활용하여 애플리케이션을 배포하고 관리
+- AWS, Azure, Google Cloud Platform 등의 클라우드 제공 업체에서 제공하는 서비스를 활용하여 서버 인스턴스, 데이터베이스, 로드 밸런서 등을 프로비저닝하고 관리
+
+6. 스케일링 전략
+- 트래픽이 증가할 경우 애플리케이션의 확장성을 고려하여 스케일링 전략을 수립
+- 수평 스케일링, 수직 스케일링, 로드 밸런싱 등의 방법을 활용하여 애플리케이션의 성능과 가용성을 향상
+
+7. 보안 설정
+- 애플리케이션의 보안을 강화하기 위해 서버 환경의 보안 설정을 수행
+- HTTPS 적용, 웹 방화벽, 보안 그룹 설정, 엑세스 제어 등을 고려하여 애플리케이션을 보호
+
+애플리케이션의 배포 전략과 서버 환경 설정을 설계하고 구현 
+실제로는 프로젝트의 요구사항과 환경에 따라 추가적인 설정과 조치가 필요안정적이고 확장 가능한 서비스를 구축
+
+1. 빌드 프로세스
+- Webpack을 사용하여 애플리케이션 번들링과 최적화를 수행
+
+```javascript const path = require('path');
+
+module.exports = { entry: './src/index.js', output: { path: path.resolve(__dirname, 'dist'), filename: 'bundle.js', }, module: { rules: [ { test: /.js$/, exclude: /node_modules/, use: { loader: 'babel-loader', options: { presets: ['@babel/preset-env'], }, }, }, ], }, }; ```
+
+2. 환경 변수 관리
+- dotenv 패키지를 사용하여 환경 변수를 로드하고 관리
+- .env 파일에 환경 변수를 설정
+
+```javascript require('dotenv').config();
+
+const port = process.env.PORT || 3000; const dbUrl = process.env.DB_URL; ```
+
+3. 로깅
+- winston 패키지를 사용하여 로깅을 구현
+
+```javascript const winston = require('winston');
+
+const logger = winston.createLogger({ transports: [ new winston.transports.File({ filename: 'logs/error.log', level: 'error' }), new winston.transports.File({ filename: 'logs/combined.log' }), ], format: winston.format.combine( winston.format.timestamp(), winston.format.json() ), });
+
+logger.error('An error occurred'); logger.info('Information log'); ```
+
+4. 모니터링
+- Prometheus와 Grafana를 사용하여 애플리케이션의 모니터링을 구현
+- Prometheus는 메트릭 수집을 위한 서버이고, Grafana는 메트릭을 시각화하는 대시보드
+
+5. 클라우드 환경 활용
+- AWS Elastic Beanstalk를 사용하여 Node.js 애플리케이션을 배포
+- Elastic Beanstalk은 애플리케이션을 자동으로 프로비저닝하고 관리하는 플랫폼
+
+6. 스케일링 전략
+- AWS Auto Scaling을 사용하여 트래픽 증가에 따라 애플리케이션 인스턴스 수를 자동으로 조정
+
+7. 보안 설정
+- HTTPS 적용을 위해 SSL 인증서를 구매하고, Node.js 애플리케이션에 SSL 인증서를 적용
+- 웹 방화벽을 사용하여 악성 트래픽으로부터 애플리케이션을 보호

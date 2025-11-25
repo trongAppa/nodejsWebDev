@@ -1,0 +1,76 @@
+﻿쿠키와 세션
+웹 애플리케이션에서 사용자의 상태를 유지하고 인증을 위해 중요한 개념 
+
+쿠키(Cookie)
+- 클라이언트(브라우저)에 저장되는 작은 데이터 조각
+- Node.js에서 쿠키를 다루기 위해 cookie-parser와 같은 미들웨어를 사용
+- Set-Cookie 헤더를 통해 클라이언트로 전송되며, 클라이언트는 이를 저장
+- 주로 사용자 식별, 선호 설정, 세션 관리 등에 활용
+- 보안상의 이슈로 인해 중요한 정보는 쿠키에 저장하지 않는 것이 좋음 / 대신, 쿠키에는 세션 ID와 같은 식별자만 저장하고, 실제 데이터는 서버에서 관리하는 것이 안전
+
+세션(Session)
+- 서버에 저장되는 사용자 정보
+- Node.js에서 세션을 관리하기 위해 express-session과 같은 미들웨어를 사용
+- 클라이언트의 요청에 따라 서버에서 고유한 세션 ID를 생성하고, 이를 쿠키에 저장하여 클라이언트와 연결
+- 서버에서 관리되기 때문에 보안상의 이슈가 적음
+- 세션을 통해 사용자의 로그인 상태를 확인하고 인증된 요청만 처리
+
+Node.js에서는 쿠키와 세션을 사용하여 사용자의 상태를 유지하고 인증을 처리가능
+보안과 인증을 강화하고, 웹 애플리케이션의 안전성을 높임
+쿠키와 세션을 올바르게 활용하여 사용자의 개인 정보 보호와 웹 애플리케이션의 보안을 유지하는 것이 중요
+
+1. cookie-parser 예제 코드
+
+const express = require('express');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+
+app.get('/', (req, res) => {
+  // 쿠키 설정
+  res.cookie('username', 'John Doe', { maxAge: 900000, httpOnly: true });
+
+  // 쿠키 읽기
+  const username = req.cookies.username;
+  console.log('Username:', username);
+
+  res.send('Hello, cookies!');
+});
+
+app.listen(3000, () => {
+  console.log('서버가 정상적으로 시작되었습니다.');
+});
+
+cookie-parser 미들웨어를 사용하여 쿠키를 다루고 res.cookie()를 사용하여 쿠키를 설정하고, req.cookies를 통해 쿠키를 읽어올 수 있음
+
+2. express-session 예제 코드
+
+const express = require('express');
+const session = require('express-session');
+
+const app = express();
+app.use(session({
+  secret: 'mysecretkey',
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.get('/', (req, res) => {
+  // 세션 설정
+  req.session.username = 'John Doe';
+
+  // 세션 읽기
+  const username = req.session.username;
+  console.log('Username:', username);
+
+  res.send('Hello, sessions!');
+});
+
+app.listen(3000, () => {
+  console.log('서버가 정상적으로 시작되었습니다.');
+});
+
+express-session 미들웨어를 사용하여 세션을 다루고  app.use(session())을 통해 세션을 설정하고, req.session을 통해 세션을 읽고 쓸 수 있음
+
+코드를 실행하면 "/" 경로로 요청이 들어올 때 쿠키 또는 세션을 설정하고 읽어오는 간단한 예제
