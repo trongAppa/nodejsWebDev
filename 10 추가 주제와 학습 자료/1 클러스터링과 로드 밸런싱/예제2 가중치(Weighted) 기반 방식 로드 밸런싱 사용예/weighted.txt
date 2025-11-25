@@ -1,0 +1,57 @@
+가중치(Weighted) 기반 방식 로드 밸런싱
+Node.js에서 가중치 기반(Weighted) 방식의 로드 밸런싱을 구현하는 예제
+
+const http = require('http');
+
+// 서버 목록과 가중치 설정
+const servers = [
+  { host: 'server1.example.com', port: 3000, weight: 3 },
+  { host: 'server2.example.com', port: 3000, weight: 2 },
+  { host: 'server3.example.com', port: 3000, weight: 1 }
+];
+
+// 가중치 합 계산
+const totalWeight = servers.reduce((sum, server) => sum + server.weight, 0);
+
+// 현재 요청을 처리할 서버 인덱스
+let currentServerIndex = 0;
+
+// HTTP 서버 생성
+const server = http.createServer((req, res) => {
+  // 현재 서버 인덱스에 해당하는 서버로 요청 전달
+  const currentServer = servers[currentServerIndex];
+  const options = {
+    host: currentServer.host,
+    port: currentServer.port,
+    path: req.url,
+    method: req.method
+  };
+
+  // 다음 요청을 위해 서버 인덱스 업데이트
+  currentServerIndex = (currentServerIndex + 1) % servers.length;
+
+  // 서버에 요청 전달
+  const proxyReq = http.request(options, (proxyRes) => {
+    // 서버 응답을 클라이언트에 전달
+    res.writeHead(proxyRes.statusCode, proxyRes.headers);
+    proxyRes.pipe(res);
+  });
+
+  // 클라이언트 요청을 서버에 전달
+  req.pipe(proxyReq);
+});
+
+// 서버 시작
+const port = 8000;
+server.listen(port, () => {
+  console.log(`Load balancer is running on port ${port}`);
+});
+
+servers 배열에 서버 목록을 정의하고, 각 서버에 가중치를 설정하는 방식으로 동작
+각 서버의 가중치는 weight 속성으로 설정
+
+서버의 가중치 합을 계산한 후, 요청이 들어올 때마다 현재 서버 인덱스에 해당하는 서버로 요청을 전달
+가중치가 높은 서버일수록 요청이 분배되는 비율이 높음
+
+서버 생성은 http.createServer() 함수를 사용하여 이루어지며, 클라이언트 요청이 들어올 때마다 요청을 현재 서버 인덱스에 해당하는 서버로 전달
+요청을 서버에 전달하기 위해 http.request() 함수를 사용하고, 서버 응답을 클라이언트에 전달하기 위해 res.writeHead()와 proxyRes.pipe(res)를 사용

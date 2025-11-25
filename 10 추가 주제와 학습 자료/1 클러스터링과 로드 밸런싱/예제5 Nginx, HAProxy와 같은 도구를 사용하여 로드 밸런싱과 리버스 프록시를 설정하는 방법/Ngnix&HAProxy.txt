@@ -1,0 +1,56 @@
+Nginx, HAProxy와 같은 도구를 사용하여 로드 밸런싱과 리버스 프록시를 설정하는 방법
+Nginx를 사용하여 로드 밸런싱과 리버스 프록시를 설정하는 예제
+
+http {
+  upstream backend {
+    server backend1.example.com;
+    server backend2.example.com;
+    server backend3.example.com;
+  }
+
+  server {
+    listen 80;
+
+    location / {
+      proxy_pass http://backend;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+    }
+  }
+}
+
+upstream 블록을 사용하여 백엔드 서버 그룹을 정의
+backend1.example.com, backend2.example.com, backend3.example.com 세 개의 백엔드 서버를 사용하도록 설정
+
+server 블록에서는 Nginx가 클라이언트로부터의 요청을 받고, 해당 요청을 proxy_pass 디렉티브를 통해 백엔드 서버 그룹인 backend에 전달
+proxy_set_header 디렉티브를 사용하여 요청 헤더에 필요한 정보를 추가
+
+HTTP 리스닝 포트로 80을 사용
+실제 프로젝트에서는 포트 번호를 필요에 맞게 수정
+백엔드 서버 주소를 실제 서버 주소로 변경
+
+HAProxy를 사용하여 로드 밸런싱과 리버스 프록시를 설정
+HAProxy의 설정 파일
+
+frontend http-in
+  bind *:80
+  mode http
+  default_backend backend
+
+backend backend
+  balance roundrobin
+  server backend1 backend1.example.com
+  server backend2 backend2.example.com
+  server backend3 backend3.example.com
+
+frontend 블록에서 HTTP 프론트엔드를 정의하고, bind 디렉티브를 사용하여 포트 80에서 클라이언트 요청을 수신하도록 설정
+mode http는 HTTP 모드로 동작함을 나타냄
+
+backend 블록에서는 balance 디렉티브를 사용하여 로드 밸런싱 알고리즘을 설정
+라운드로빈 방식을 사용하도록 설정
+server 디렉티브를 사용하여 백엔드 서버를 추가
+
+실제 프로젝트에서는 백엔드 서버 주소를 실제 서버 주소로 변경
+
+Nginx와 HAProxy를 사용하여 로드 밸런싱과 리버스 프록시를 설정하는 방법을 보여줌
+실제 운영 환경에서는 더 다양한 설정이 필요할 수 있으며, 문서를 참조하여 필요한 설정을 추가
